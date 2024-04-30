@@ -75,6 +75,7 @@ from discrete_mixed_bo.problems.re_problems import PressureVessel
 from discrete_mixed_bo.problems.svm import SVMFeatureSelection
 from discrete_mixed_bo.problems.welded_beam import WeldedBeam
 from discrete_mixed_bo.problems.xgboost_hp import XGBoostHyperparameter
+from discrete_mixed_bo.problems.poli_bridge import PoliObjective
 from discrete_mixed_bo.rffs import get_gp_sample_w_transforms
 
 
@@ -297,9 +298,11 @@ def initialize_model(
                 spec = LatentCategoricalSpec(
                     idx=idx,
                     num_categories=card,
-                    latent_dim=latent_emb_dim
-                    if latent_emb_dim is not None
-                    else (1 if card <= 3 else 2),
+                    latent_dim=(
+                        latent_emb_dim
+                        if latent_emb_dim is not None
+                        else (1 if card <= 3 else 2)
+                    ),
                 )
                 categorical_transformed_features[start] = spec.latent_dim
                 start = start + spec.latent_dim
@@ -723,6 +726,13 @@ def get_problem(name: str, dim: Optional[int] = None, **kwargs) -> DiscreteTestP
         return WeldedBeam(
             negate=True,
             continuous=kwargs.get("continuous", False),
+        )
+    elif name == "poli":
+        return PoliObjective(
+            black_box=kwargs["black_box"],
+            alphabet=kwargs.get("alphabet", None),
+            sequence_length=kwargs.get("sequence_length", None),
+            negate=True,
         )
     else:
         raise ValueError(f"Unknown function name: {name}!")
