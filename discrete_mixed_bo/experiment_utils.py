@@ -732,7 +732,7 @@ def get_problem(name: str, dim: Optional[int] = None, **kwargs) -> DiscreteTestP
             black_box=kwargs["black_box"],
             alphabet=kwargs.get("alphabet", None),
             sequence_length=kwargs.get("sequence_length", None),
-            negate=True,
+            negate=kwargs.get("negate", False),
         )
     else:
         raise ValueError(f"Unknown function name: {name}!")
